@@ -12,17 +12,6 @@
 #include "Encoder.h"
 
 int version = 1;
-  
-//Pin connected to the tx pin of the Qik motor controller.
-int transmit_pin_qik = 25;
-
-//Pin connected to the rx pin of the Qik motor controller.
-int receive_pin_qik = 26;
-
-//Baud rate used to communicate with the Qik motor controller.
-int baud_rate = 115200;
-
-//static volatile Channel send, receive;
 
 static int motor_power = 20;
 static int motor_left_direction = 1;
@@ -48,6 +37,15 @@ void set_motor_right_direction(int direction){
 }
 
 void motors(void* obj){
+  //Pin connected to the tx pin of the Qik motor controller.
+  int transmit_pin_qik = 25;
+  
+  //Pin connected to the rx pin of the Qik motor controller.
+  int receive_pin_qik = 26;
+  
+  //Baud rate used to communicate with the Qik motor controller.
+  int baud_rate = 115200;
+
   Qik qik(transmit_pin_qik, receive_pin_qik, baud_rate);
 
   //Pin connected to the photointerrupter of the encoder on the left motor.
@@ -74,77 +72,90 @@ void motors(void* obj){
   int wheelCircumference = 386; // In mm
   
   int set_power = 0;
+  int adjusted_power = 0;
   
   for(;;){
     if(set_power != motor_power){
-      qik.set_motor_speed(Qik::M0, motor_power);
+      adjusted_power = motor_power;
       qik.set_motor_speed(Qik::M1, motor_power);
-      
       set_power = motor_power;
     }else{
       int speed0 = enc0.getSpeed();
       int speed1 = enc1.getSpeed();
+      //print("s0:%d\n", speed0);
+      //print("s1:%d\n", speed1);
       if(speed0 < speed1){
          //drive a bit faster
-         qik.set_motor_speed(Qik::M0, motor_power++);
+         //qik.set_motor_speed(Qik::M0, ++adjusted_power);
+         //if(motor_power <= 0){
+           //if(adjusted_power > 0){
+             //adjusted_power = 0;
+           //}             
+         //}
       }else if(speed0 > speed1){
          //drive a bit slower
-         qik.set_motor_speed(Qik::M0, motor_power--);
-      } 
-    }    
-    
-    pause(250);
+         //qik.set_motor_speed(Qik::M0, --adjusted_power);
+         //if(motor_power >= 0){
+           //if(adjusted_power < 0){
+             //adjusted_power = 0;
+           //}  
+         //}
+      }
+    }
+    pause(50);
   }    
 }
 
 int main(){
   print("Started\n");
- 
-  cog_run(motors, 100);
+  int temp=1;
+  motors(&temp);
   
-  Uart uart;
+  //cog_run(motors, 100);
   
-  while (1) {
-    char c = uart.readChar();
+  //Uart uart;
+  
+  //while (1) {
+  //  char c = uart.readChar();
     
-    print("Received %c", c);
+  //  print("Received %c", c);
     
-    switch(c){
-      case uart_forward:{
-        print("going forward");
-        motor_left_direction = 1;
-        motor_right_direction = 1;
-      }break; 
-      case uart_backward:{
-        motor_left_direction = -1;
-        motor_right_direction = -1;
-      }break; 
-      case uart_set_speed:{
-        char speed = uart.readChar();
-        print("setting speed");
-        set_motor_power(speed);
-        print("set speed to %d", speed);
-      }break; 
-      case uart_get_speed:{
-        uart.send(get_motor_power());
-      }break; 
-      case uart_rotate_left:{
-        motor_left_direction = -1;
-        motor_right_direction = 1;
-      }break; 
-      case uart_rotate_right:{
-        motor_left_direction = 1;
-        motor_right_direction = -1;
-      }break; 
-      case uart_stop:{
-        motor_left_direction = 0;
-        motor_right_direction = 0;
-      }break; 
-      case uart_version:{
-        uart.send(version);
-      }break; 
-    }      
-  }  
+  //  switch(c){
+  //    case uart_forward:{
+  //      print("going forward");
+  //      motor_left_direction = 1;
+  //      motor_right_direction = 1;
+  //    }break; 
+  //    case uart_backward:{
+  //      motor_left_direction = -1;
+  //      motor_right_direction = -1;
+  //    }break; 
+  //    case uart_set_speed:{
+  //      char speed = uart.readChar();
+  //      print("setting speed");
+  //      set_motor_power(speed);
+  //      print("set speed to %d", speed);
+  //    }break; 
+  //    case uart_get_speed:{
+  //      uart.send(get_motor_power());
+  //    }break; 
+  //    case uart_rotate_left:{
+  //      motor_left_direction = -1;
+  //      motor_right_direction = 1;
+  //    }break; 
+  //    case uart_rotate_right:{
+  //      motor_left_direction = 1;
+  //      motor_right_direction = -1;
+  //    }break; 
+  //    case uart_stop:{
+  //      motor_left_direction = 0;
+  //      motor_right_direction = 0;
+  //   }break; 
+  //    case uart_version:{
+  //      uart.send(version);
+  //    }break; 
+  //  }      
+  //}  
   
   return 0;
 }
