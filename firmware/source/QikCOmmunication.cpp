@@ -163,10 +163,10 @@ int main(){
       case uart_version:{
         uart.send(version);
       }break; 
-      case encoder_speed0:{
+      case uart_encoder_speed0:{
         uart.send(enc0->getSpeed());
       }break; 
-      case encoder_speed1:{
+      case uart_encoder_speed1:{
         uart.send(enc1->getSpeed());
       }break; 
     }      
