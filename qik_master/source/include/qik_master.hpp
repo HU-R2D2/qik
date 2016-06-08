@@ -14,6 +14,7 @@ public:
 	~qik_master();
 
 	bool forward();
+	bool backward();
 	bool stop();
 
 	bool setSpeed(uint8_t speed);
