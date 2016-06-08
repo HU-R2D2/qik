@@ -13,9 +13,10 @@
 
 int version = 1;
 
-static int motor_power = 20;
-static int motor_left_direction = 1;
-static int motor_right_direction = 1;
+volatile int speed = 10;
+volatile int motor_power = 10;
+volatile int motor0_direction = 1;
+volatile int motor1_direction = 1;
 
 void set_motor_power(int power){
   //TODO(Bouke): handle concurrency
@@ -26,17 +27,20 @@ int get_motor_power(){
   return motor_power;
 }  
 
-void set_motor_left_direction(int direction){
+void set_motor0_direction(int direction){
   //TODO(Bouke): handle concurrency
-  motor_left_direction = direction;
+  motor0_direction = direction;
 }
 
-void set_motor_right_direction(int direction){
+void set_motor1_direction(int direction){
   //TODO(Bouke): handle concurrency
-  motor_right_direction = direction;
+  motor1_direction = direction;
 }
 
 void motors(void* obj){
+  int old_motor0_direction = motor0_direction;
+  int old_motor1_direction = motor1_direction;
+  
   //Pin connected to the tx pin of the Qik motor controller.
   int transmit_pin_qik = 25;
   
@@ -75,87 +79,90 @@ void motors(void* obj){
   int adjusted_power = 0;
   
   for(;;){
-    if(set_power != motor_power){
-      adjusted_power = motor_power;
-      qik.set_motor_speed(Qik::M1, motor_power);
-      set_power = motor_power;
+    int temp_motor_power = motor_power;
+    int temp_motor0_direction = motor0_direction;
+    int temp_motor1_direction = motor1_direction;
+    
+    if(temp_motor0_direction != old_motor0_direction || set_power != temp_motor_power){
+      old_motor0_direction = temp_motor0_direction;
+      adjusted_power = old_motor0_direction*temp_motor_power;
+    }
+    if(set_power != temp_motor_power || temp_motor1_direction != old_motor1_direction){
+      old_motor1_direction = temp_motor1_direction;
+      qik.set_motor_speed(Qik::M1, old_motor1_direction*temp_motor_power);
+      set_power = temp_motor_power;
     }else{
       int speed0 = enc0.getSpeed();
       int speed1 = enc1.getSpeed();
+      
+      if(temp_motor0_direction == temp_motor1_direction){
+        if(speed0 < speed1){
+           qik.set_motor_speed(Qik::M0, adjusted_power+=1);
+           
+        }else if(speed0 > speed1){
+           qik.set_motor_speed(Qik::M0, adjusted_power-=1);
+        }
+      } else{
+        if(-speed0 < speed1){
+           qik.set_motor_speed(Qik::M0, adjusted_power-=1);
+           
+        }else if(-speed0 > speed1){
+           qik.set_motor_speed(Qik::M0, adjusted_power+=1);
+        }
+      }        
+      
       //print("s0:%d\n", speed0);
       //print("s1:%d\n", speed1);
-      if(speed0 < speed1){
-         //drive a bit faster
-         //qik.set_motor_speed(Qik::M0, ++adjusted_power);
-         //if(motor_power <= 0){
-           //if(adjusted_power > 0){
-             //adjusted_power = 0;
-           //}             
-         //}
-      }else if(speed0 > speed1){
-         //drive a bit slower
-         //qik.set_motor_speed(Qik::M0, --adjusted_power);
-         //if(motor_power >= 0){
-           //if(adjusted_power < 0){
-             //adjusted_power = 0;
-           //}  
-         //}
-      }
+      //print("adjustedPower:%d\n", adjusted_power);
     }
-    pause(50);
+    pause(100);
   }    
 }
 
 int main(){
-  print("Started\n");
   int temp=1;
-  motors(&temp);
+  cog_run(motors, 128);//motors(&temp);
+  Uart uart;
   
-  //cog_run(motors, 100);
-  
-  //Uart uart;
-  
-  //while (1) {
-  //  char c = uart.readChar();
+  while (1) {
+    char c = uart.readChar();
     
-  //  print("Received %c", c);
+    uart.send(c);
+    uart.send((char)uart_ok);
     
-  //  switch(c){
-  //    case uart_forward:{
-  //      print("going forward");
-  //      motor_left_direction = 1;
-  //      motor_right_direction = 1;
-  //    }break; 
-  //    case uart_backward:{
-  //      motor_left_direction = -1;
-  //      motor_right_direction = -1;
-  //    }break; 
-  //    case uart_set_speed:{
-  //      char speed = uart.readChar();
-  //      print("setting speed");
-  //      set_motor_power(speed);
-  //      print("set speed to %d", speed);
-  //    }break; 
-  //    case uart_get_speed:{
-  //      uart.send(get_motor_power());
-  //    }break; 
-  //    case uart_rotate_left:{
-  //      motor_left_direction = -1;
-  //      motor_right_direction = 1;
-  //    }break; 
-  //    case uart_rotate_right:{
-  //      motor_left_direction = 1;
-  //      motor_right_direction = -1;
-  //    }break; 
-  //    case uart_stop:{
-  //      motor_left_direction = 0;
-  //      motor_right_direction = 0;
-  //   }break; 
-  //    case uart_version:{
-  //      uart.send(version);
-  //    }break; 
-  //  }      
-  //}  
+    switch(c){
+      case uart_forward:{
+        set_motor0_direction(1);
+        set_motor1_direction(1);
+      }break; 
+      case uart_backward:{
+        set_motor0_direction(-1);
+        set_motor1_direction(-1);
+      }break; 
+      case uart_set_speed:{
+        char speed = uart.readChar();
+        set_motor_power(speed);
+      }break; 
+      case uart_get_speed:{
+        uart.send(get_motor_power());
+      }break; 
+      case uart_rotate_left:{
+        set_motor0_direction(-1);
+        set_motor1_direction(1);
+      }break; 
+      case uart_rotate_right:{
+        set_motor0_direction(1);
+        set_motor1_direction(-1);
+      }break; 
+      case uart_stop:{
+        set_motor0_direction(0);
+        set_motor1_direction(0);
+     }break; 
+      case uart_version:{
+        uart.send(version);
+      }break; 
+    }      
+  }  
   
   return 0;
 }

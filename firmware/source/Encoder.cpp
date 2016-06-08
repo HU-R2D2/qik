@@ -84,7 +84,7 @@ void Encoder::run(void* obj){
       //if last read was low AND pin is high [0,x] -> [1,x]
       //direction is backwards.  
       if(!readlast1 && readpin1){
-        enc->direction = 0;
+        enc->direction = -1;
       }
       //if last read was low AND pin is high [x,0] -> [x,1] 
       //direction is forwards.
@@ -114,7 +114,7 @@ void Encoder::run(void* obj){
        count = 0;
        //Update the speed.
        //The speed is equal to the current pulse count minus the pulse count a second ago.
-       enc->speed = (enc->pulseCount - lastSpeed);
+       enc->speed = (enc->pulseCount - lastSpeed) * enc->direction;
        //Update the pulse count from a second ago with the current pulse count.
        lastSpeed = enc->pulseCount; 
     }
