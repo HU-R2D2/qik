@@ -15,8 +15,8 @@ int version = 1;
 
 volatile int speed = 10;
 volatile int motor_power = 10;
-volatile int motor0_direction = 1;
-volatile int motor1_direction = 1;
+volatile int motor0_direction = 0;
+volatile int motor1_direction = 0;
 
 void set_motor_power(int power){
   //TODO(Bouke): handle concurrency
