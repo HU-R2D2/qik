@@ -15,4 +15,6 @@ static const unsigned char uart_rotate_right    = 0x06;   //Rosbee rotate right
 static const unsigned char uart_stop            = 0x07;   //Rosbee stop
 static const unsigned char uart_version         = 0x0A;   //Firmware Version
 
+static const unsigned char uart_ok				= 0xFF;   //command recieved
+
 #endif //ADT_QIK_COMMANDS_HPP

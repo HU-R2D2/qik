@@ -17,6 +17,7 @@ int main()
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 	std::cout << "Sending stop command";
 	qik.stop();
-	
+
+	delete qik;
 	return 0;
 }

@@ -13,17 +13,18 @@ public:
 	qik_master(std::string port, int baudrate);
 	~qik_master();
 
-	void forward();
-	void stop();
+	bool forward();
+	bool stop();
 
-	void setSpeed(uint8_t speed);
+	bool setSpeed(uint8_t speed);
 	int getSpeed();
 
-	void rotate_left();
-	void rotate_right();
+	bool rotate_left();
+	bool rotate_right();
 
 	char get_version();
 private:
+	bool check_response(unsigned char command);
 	LibSerial serial_connection;
 };
 
