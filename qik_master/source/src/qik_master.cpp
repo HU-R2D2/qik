@@ -4,8 +4,16 @@
 
 #include "../include/qik_master.hpp"
 #include "../include/qik_commands.hpp"
+
+bool qik_master::backward() {
+	serial_connection.writeChar(uart_backward);
+	return check_response(uart_backward);
+}
+
 qik_master::qik_master(std::string port, int baudrate) {
-	serial_connection.open(port.c_str(), baudrate);
+	if(serial_connection.open(port.c_str(), baudrate) != 1){
+		throw "failed to open serial port";
+	};
 }
 
 qik_master::~qik_master() {
