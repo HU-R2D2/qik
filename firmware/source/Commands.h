@@ -1,3 +1,5 @@
+#ifndef qik_commands
+#define qik_commands
 //Motor control via Qik motor driver
 static const unsigned char command_sync       = 0xAA;   //Synchronisation
 static const unsigned char command_version    = 0x81;   //Firmware Version
@@ -22,3 +24,4 @@ static const unsigned char uart_encoder_speed0  = 0x38;   //Firmware Version
 static const unsigned char uart_encoder_speed1  = 0x39;   //Firmware Version
 
 static const unsigned char uart_ok              = 0x3A;   //reply ok
+#endif
