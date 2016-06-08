@@ -13,7 +13,9 @@
 
 int version = 1;
 
-volatile int speed = 10;
+Encoder * enc0;
+Encoder * enc1;
+
 volatile int motor_power = 10;
 volatile int motor0_direction = 0;
 volatile int motor1_direction = 0;
@@ -51,14 +53,6 @@ void motors(void* obj){
   int baud_rate = 115200;
 
   Qik qik(transmit_pin_qik, receive_pin_qik, baud_rate);
-
-  //Pin connected to the photointerrupter of the encoder on the left motor.
-  int left_wheel_pin = 0;
-  //Pin connected to the photointerrupter of the encoder on the right motor.
-  int right_wheel_pin = 3;
-  
-  Encoder enc0(left_wheel_pin, 0);
-  Encoder enc1(right_wheel_pin, 1);
   
   //value to change the value of the motor. 
   int countChangeStepSize = 100;
@@ -78,7 +72,7 @@ void motors(void* obj){
   int set_power = 0;
   int adjusted_power = 0;
   
-  for(;;){
+  while(true){
     int temp_motor_power = motor_power;
     int temp_motor0_direction = motor0_direction;
     int temp_motor1_direction = motor1_direction;
@@ -92,9 +86,8 @@ void motors(void* obj){
       qik.set_motor_speed(Qik::M1, old_motor1_direction*temp_motor_power);
       set_power = temp_motor_power;
     }else{
-      int speed0 = enc0.getSpeed();
-      int speed1 = enc1.getSpeed();
-      
+      int speed0 = enc0->getSpeed();
+      int speed1 = enc1->getSpeed();
       if(temp_motor0_direction == temp_motor1_direction){
         if(speed0 < speed1){
            qik.set_motor_speed(Qik::M0, adjusted_power+=1);
@@ -120,8 +113,17 @@ void motors(void* obj){
 }
 
 int main(){
+  //Pin connected to the photointerrupter of the encoder on the left motor.
+  int left_wheel_pin = 0;
+  //Pin connected to the photointerrupter of the encoder on the right motor.
+  int right_wheel_pin = 3;
+  
+  enc0 = new Encoder(left_wheel_pin, 0);
+  enc1 = new Encoder(right_wheel_pin, 1);
+  
   int temp=1;
-  cog_run(motors, 128);//motors(&temp);
+  //motors(&temp);
+  cog_run(motors, 128);
   Uart uart;
   
   while (1) {
@@ -160,6 +162,12 @@ int main(){
      }break; 
       case uart_version:{
         uart.send(version);
+      }break; 
+      case encoder_speed0:{
+        uart.send(enc0->getSpeed());
+      }break; 
+      case encoder_speed1:{
+        uart.send(enc1->getSpeed());
       }break; 
     }      
   }  
