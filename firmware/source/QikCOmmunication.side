@@ -1,0 +1,18 @@
+QikCOmmunication.cpp
+Qik.cpp
+Qik.h
+Commands.h
+Uart.h
+Uart.cpp
+Channel.h
+Encoder.cpp -> Encoder.cpp
+Encoder.h -> Encoder.h
+>compiler=C++
+>memtype=cmm main ram compact
+>optimize=-Os
+>-m32bit-doubles
+>-fno-exceptions
+>-fno-rtti
+>defs::-std=gnu++0x
+>-ltiny
+>BOARD::ACTIVITYBOARD
