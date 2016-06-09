@@ -90,7 +90,7 @@ void Qik::set_motor_speed(int motor, int speed){
   }
   
   //Make the speed absolute. Does nothing if it already was.
-  //Speed is expected in a range from 0 to 127 included.
+  //Speed is expected in a range from 0 to 100 included.
   speed = abs(speed);
   
   if(speed > 127) speed = 127;

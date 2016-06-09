@@ -84,13 +84,21 @@ int Uart::readInt(){
   //Send the character.
   putChar(data);
  }   
+ 
+ union uart_integer_codec{
+  int as_integer;
+  char as_char_array[4];
+ 
+ };   
   
  void Uart::send(int data){
   //Cast the int to four chars.
   //This is faster and easier the bit shifting and copying.
-  char *intChar = reinterpret_cast<char*>(&data);
+  //char *intChar = reinterpret_cast<char*>(&data);
   //Send all four bytes.
+  uart_integer_codec buf;
+  buf.as_integer = data;
   for(int i =0; i<4; ++i){
-     putChar(intChar[i]); 
+    putChar(buf.as_char_array[i]); 
   }
  }
