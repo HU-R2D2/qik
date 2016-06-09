@@ -10,7 +10,7 @@
 #include "qik_commands.hpp"
 class qik_master {
 public:
-	qik_master(std::string port, int baudrate);
+	qik_master(std::string port, unsigned int baudrate);
 	~qik_master();
 
 	bool forward();
@@ -22,6 +22,8 @@ public:
 
 	bool rotate_left();
 	bool rotate_right();
+
+	int get_encoder_speed(int encoder);
 
 	char get_version();
 private:
