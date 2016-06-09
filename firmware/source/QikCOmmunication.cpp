@@ -16,7 +16,7 @@ int version = 1;
 Encoder * enc0;
 Encoder * enc1;
 
-volatile int motor_power = 10;
+volatile int motor_power = 30;
 volatile int motor0_direction = 0;
 volatile int motor1_direction = 0;
 
