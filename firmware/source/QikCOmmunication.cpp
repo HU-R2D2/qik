@@ -80,6 +80,7 @@ void motors(void* obj){
     if(temp_motor0_direction != old_motor0_direction || set_power != temp_motor_power){
       old_motor0_direction = temp_motor0_direction;
       adjusted_power = old_motor0_direction*temp_motor_power;
+      //qik.set_motor_speed(Qik::M0, adjusted_power);
     }
     if(set_power != temp_motor_power || temp_motor1_direction != old_motor1_direction){
       old_motor1_direction = temp_motor1_direction;
@@ -102,13 +103,15 @@ void motors(void* obj){
         }else if(-speed0 > speed1){
            qik.set_motor_speed(Qik::M0, adjusted_power+=1);
         }
-      }        
+      }
+      if(adjusted_power > 100){adjusted_power = 100;}
+      if(adjusted_power < -100){adjusted_power = -100;}
       
       //print("s0:%d\n", speed0);
       //print("s1:%d\n", speed1);
       //print("adjustedPower:%d\n", adjusted_power);
     }
-    pause(100);
+    pause(30);
   }    
 }
 
