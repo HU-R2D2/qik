@@ -106,17 +106,17 @@ void Encoder::run(void* obj){
     //Add 1 tick the the time counter.
     //This is equal to 2 ms.
     count++;
-    //Check if we are 500 tick further.
-    //This is equal to 1 sec.
-    if(count >= 500){
+    //Check if we are 100 tick further.
+    //This is equal to 200 ms.
+    if(count >= 100){
        //Restet the counter to 0.
-       //So we can begin counting a new second.
+       //So we can begin counting a new period.
        count = 0;
        //Update the speed.
-       //The speed is equal to the current pulse count minus the pulse count a second ago.
+       //The speed is equal to the current pulse count minus the pulse count a period ago.
        enc->speed = (enc->pulseCount - lastSpeed) * enc->direction;
-       //Update the pulse count from a second ago with the current pulse count.
-       lastSpeed = enc->pulseCount; 
+       //Update the pulse count from a period ago with the current pulse count.
+       lastSpeed = enc->pulseCount;        
     }
     
     //count times how long the encoder has speed ZERO

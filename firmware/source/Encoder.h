@@ -1,6 +1,5 @@
 #ifndef _ENCODER_H
-#define _ENCODER_H
-
+#define _ENCODER_H 
 /// @brief Simple interface for the Quadrature encoder.
 ///
 /// The Encoder class provides a simple interface for interfacing between
@@ -19,7 +18,6 @@ private:
   int cogId;
   int side;
   static void run(void* obj);
-  
 public:
   
   /// @brief Create a new Encoder object.
@@ -54,7 +52,7 @@ public:
   /// Since we use a rotary encoder disk this effectively translates in the rotation speed.
   /// The speed is calculated from a second ago and may lag behind the reality a little.
   /// @return The pulse count last second.
-  int getSpeed();
+  int getSpeed();    
 };
   
 #endif // _ENCODER_H

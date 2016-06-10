@@ -1,4 +1,4 @@
-QikCOmmunication.cpp
+Main.cpp
 Qik.cpp
 Qik.h
 Commands.h
@@ -7,6 +7,7 @@ Uart.cpp
 Channel.h
 Encoder.cpp -> Encoder.cpp
 Encoder.h -> Encoder.h
+Main.h
 >compiler=C++
 >memtype=lmm main ram
 >optimize=-Os
