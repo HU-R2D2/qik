@@ -10,9 +10,9 @@
 const static int COUNTS = 100;
 
 //Encoder counts for 1 wheel turn for the rosbee. for another wheel needs other value.
-const static int total_counts360wheel_turn=3000; // In encoder counts
+const static float total_counts360wheel_turn=3000; // In encoder counts
 //circumference of the wheel of the rosbee in mm.
-const static int wheel_circumference=386; // In mm
+const static float wheel_circumference=386; // In mm
 
 class Encoder{
 private:

@@ -114,7 +114,7 @@ void Encoder::run(void* obj){
        count = 0;
        //Update the speed.
        //The speed is calculated to millimeter each second.
-       enc->speed = enc->direction * ((enc->pulseCount - lastSpeed) * wheel_circumference * (500/COUNTS) / total_counts360wheel_turn);
+       enc->speed = (int)(enc->direction * (((enc->pulseCount - lastSpeed) / total_counts360wheel_turn) * wheel_circumference * (500.0/COUNTS)));
        //Update the pulse count from a period ago with the current pulse count.
        lastSpeed = enc->pulseCount;
     }
