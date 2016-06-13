@@ -15,7 +15,7 @@
 
 Encoder * enc0;
 Encoder * enc1;
-volatile int motor_speed=10;
+volatile int motor_speed=80;
 volatile int motor0_direction=0;
 volatile int motor1_direction=0;
 
@@ -58,12 +58,6 @@ void controlMotors(void* obj){
   //program is rebooted.
   qik.set_motor_speed(Qik::M0,0);
   qik.set_motor_speed(Qik::M1,0);
-  
-  //Encoder counts for 1 wheel turn for the rosbee. for another wheel needs other value. 
-  int totalCounts360WheelTurn = 3000; // In encoder counts
-  
-  //circumference of the wheel of the rosbee in mm. 
-  int wheelCircumference = 386; // In mm
   
   int set_power = 0;
   int adjusted_power = 0;
@@ -138,6 +132,7 @@ void controlMotors(void* obj){
     if(speed_difference1 != 0){
       qik.set_motor_speed(Qik::M1, (int)(power_motor1+=pError1));
     }
+    
     if(power_motor0 > 100){power_motor0=100;}
     if(power_motor0 < -100){power_motor0=-100;}
     if(power_motor1 > 100){power_motor1=100;}

@@ -7,12 +7,9 @@
 /// This class continuous polls the light encoder and counts high to low phase transition.
 /// To do this uninterrupted this class makes use of on of the Propeller cogs allocated with 250 bytes of memory.
 
-const static int COUNTS = 100;
+const static int COUNTS = 2000;
 
-//Encoder counts for 1 wheel turn for the rosbee. for another wheel needs other value.
-const static float total_counts360wheel_turn=3000; // In encoder counts
-//circumference of the wheel of the rosbee in mm.
-const static float wheel_circumference=386; // In mm
+const static double ticks_per_meter = 8533; // In encoder counts
 
 class Encoder{
 private:

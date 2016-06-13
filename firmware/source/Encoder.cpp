@@ -57,13 +57,19 @@ void Encoder::run(void* obj){
   int count = 0;
   
   //Var used to the calculate the speed.
-  int lastSpeed = 0;
+  int last_pulse_count = 0;
   
   //Var used to count the time for if the speed is ZERO. 
   int timer = 0;
   
+  long begin_cnt = CNT;
+  
   //Start the reading, this will never end.
   while(true){
+    long current_cnt = CNT;
+    long elapsed_cnt = current_cnt - begin_cnt;
+    begin_cnt = current_cnt;
+    
     //Read the state of the pin.
     //1 = endocer blocked
     //0 = encoder can see the led
@@ -103,35 +109,39 @@ void Encoder::run(void* obj){
     readlast1 = readpin1;
     readlast2 = readpin2;
     
-    //Add 1 tick the the time counter.
-    //This is equal to 2 ms.
-    count++;
-    //Check if we are 100 tick further.
-    //This is equal to 200 ms.
-    if(count >= COUNTS){
+    count += elapsed_cnt;
+    
+    if(count >= 16000000){
        //Restet the counter to 0.
        //So we can begin counting a new period.
        count = 0;
+       
        //Update the speed.
        //The speed is calculated to millimeter each second.
-       enc->speed = (int)(enc->direction * (((enc->pulseCount - lastSpeed) / total_counts360wheel_turn) * wheel_circumference * (500.0/COUNTS)));
+       int pulses = enc->pulseCount - last_pulse_count;
+       int mm_driven = (pulses * 1000) / 8553;
+       int mm_per_second = enc->direction * mm_driven * 5;
+       
+       enc->speed = mm_per_second;
+       
        //Update the pulse count from a period ago with the current pulse count.
-       lastSpeed = enc->pulseCount;
+       last_pulse_count = enc->pulseCount;
     }
     
     //count times how long the encoder has speed ZERO
-    if (enc->speed == 0){
-      timer ++;   
-    } 
-    else {
-      timer = 0; 
-    }  
+    //if(enc->speed == 0){
+      //timer ++;   
+    //}else{
+      //timer = 0; 
+    //}  
+    
     //if encoder speed is ZERO for 250 milliseconds.
     //pulseCount to ZERO. 
-    if (timer >= 125){
-      enc->pulseCount = 0;  
-    }         
-    //Wait 2000 microseconds aka 2 milliseconds.
-    waitcnt(CNT + 20 * us);      
+    //if(timer >= 125){
+      //enc->pulseCount = 0;  
+    //}  
+           
+    //Wait 100 microseconds aka 0.1 milliseconds.
+    //waitcnt(CNT + 1 * us); 
   }   
 } 
