@@ -13,22 +13,18 @@
 #include <time.h>
 #include <Main.h>
 
-//Encoder counts for 1 wheel turn for the rosbee. for another wheel needs other value.
-const int totalCounts360WheelTurn=3000; // In encoder counts
-//circumference of the wheel of the rosbee in mm.
-const int wheelCircumference=386; // In mm
 Encoder * enc0;
 Encoder * enc1;
 volatile int motor_speed=10;
 volatile int motor0_direction=0;
-volatile int motor1_direction=0; 
+volatile int motor1_direction=0;
 
 void set_motor_speed(int power){
   motor_speed = power;
 }
 
 int get_motor_speed(){
-  return motor_speed;
+  return (enc0->getSpeed() + enc1->getSpeed())/2;
 }  
 
 void set_motor0_direction(int direction){
@@ -95,7 +91,7 @@ void controlMotors(void* obj){
   const int encoder_wait_period_time = MILLISECOND * 20;
   const int wait_time = MILLISECOND * 100;
   while(true){
-    int temp_motor_speed = get_motor_speed();
+    int temp_motor_speed = motor_speed;
     int temp_motor0_direction = motor0_direction;
     int temp_motor1_direction = motor1_direction;
     
@@ -193,8 +189,9 @@ int main(){
         set_motor_speed(speed);
       }break; 
       case uart_get_speed:{
-        uart.send(get_motor_speed());
-      }break; 
+        print("%d\n", get_motor_speed());
+        //uart.send(get_motor_speed());
+      break;}
       case uart_rotate_left:{
         set_motor0_direction(-1);
         set_motor1_direction(1);
@@ -209,7 +206,7 @@ int main(){
      }break; 
       case uart_version:{
         uart.send(version);
-      }break; 
+      }break;
       case uart_encoder_speed0:{
         uart.send(enc0->getSpeed());
       }break; 

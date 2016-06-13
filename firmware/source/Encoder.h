@@ -6,6 +6,14 @@
 /// the Parallax Propeller and the quadrature encoder(s).
 /// This class continuous polls the light encoder and counts high to low phase transition.
 /// To do this uninterrupted this class makes use of on of the Propeller cogs allocated with 250 bytes of memory.
+
+const static int COUNTS = 100;
+
+//Encoder counts for 1 wheel turn for the rosbee. for another wheel needs other value.
+const static int total_counts360wheel_turn=3000; // In encoder counts
+//circumference of the wheel of the rosbee in mm.
+const static int wheel_circumference=386; // In mm
+
 class Encoder{
 private:
   int pin1, pin2;

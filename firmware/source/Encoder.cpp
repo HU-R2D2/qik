@@ -108,15 +108,15 @@ void Encoder::run(void* obj){
     count++;
     //Check if we are 100 tick further.
     //This is equal to 200 ms.
-    if(count >= 100){
+    if(count >= COUNTS){
        //Restet the counter to 0.
        //So we can begin counting a new period.
        count = 0;
        //Update the speed.
-       //The speed is equal to the current pulse count minus the pulse count a period ago.
-       enc->speed = (enc->pulseCount - lastSpeed) * enc->direction;
+       //The speed is calculated to millimeter each second.
+       enc->speed = enc->direction * ((enc->pulseCount - lastSpeed) * wheel_circumference * (500/COUNTS) / total_counts360wheel_turn);
        //Update the pulse count from a period ago with the current pulse count.
-       lastSpeed = enc->pulseCount;        
+       lastSpeed = enc->pulseCount;
     }
     
     //count times how long the encoder has speed ZERO

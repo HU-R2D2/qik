@@ -20,8 +20,10 @@ static const unsigned char uart_stop            = 0x34;   //Rosbee stop
 static const unsigned char uart_set_speed       = 0x35;   //Rosbee Set Speed
 static const unsigned char uart_get_speed       = 0x36;   //Rosbee Get Speed
 static const unsigned char uart_version         = 0x37;   //Firmware Version
-static const unsigned char uart_encoder_speed0  = 0x38;   //Firmware 
-static const unsigned char uart_encoder_speed1  = 0x39;   //Firmware Version
+static const unsigned char uart_encoder_speed0  = 0x38;   //
+static const unsigned char uart_encoder_speed1  = 0x39;   //
+static const unsigned char total_encoder_steps0 = 0x3B;   //
+static const unsigned char total_encoder_steps1 = 0x3C;   //
 
 static const unsigned char uart_ok              = 0x3A;   //reply ok
 #endif
