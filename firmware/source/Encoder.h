@@ -48,7 +48,7 @@ public:
   /// It resets when it turn the other way around. 
   /// It also resets when the encoder Speed is Zero for 250 milliseconds. 
   /// @return The pulse count.
-  unsigned int get_encoderCount();
+  unsigned int get_encoder_count();
   
   /// @brief Get the direction 
   ///
@@ -66,6 +66,10 @@ public:
   /// @return The pulse count last second.
   int get_speed(); 
   
+  /// @brief Get the driven distance.
+  ///
+  /// Returns the amount of millimeters the robot has driven since the start of the program.
+  /// @return The distance in millimeters.
   int get_distance();   
 };
   
