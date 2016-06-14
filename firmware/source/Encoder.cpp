@@ -16,17 +16,17 @@ Encoder::~Encoder(){
   cogstop(cogId); 
 }   
  
-unsigned int Encoder::getEncoderCount(){
+unsigned int Encoder::get_encoder_count(){
   //Return the amount of counted pulses.
   return pulseCount; 
 }
 
-int Encoder::getDirection(){
+int Encoder::get_direction(){
   //Return the direction which the encoder is turning. 
   return direction; 
 }
  
-int Encoder::getSpeed(){
+int Encoder::get_speed(){
   //Return the amount of counted pulses per second.
   return speed;  
 }
@@ -120,6 +120,9 @@ void Encoder::run(void* obj){
        //The speed is calculated to millimeter each second.
        int pulses = enc->pulseCount - last_pulse_count;
        int mm_driven = (pulses * 1000) / 8553;
+       
+       enc->distance += mm_driven;
+       
        int mm_per_second = enc->direction * mm_driven * 5;
        
        enc->speed = mm_per_second;
@@ -127,21 +130,9 @@ void Encoder::run(void* obj){
        //Update the pulse count from a period ago with the current pulse count.
        last_pulse_count = enc->pulseCount;
     }
-    
-    //count times how long the encoder has speed ZERO
-    //if(enc->speed == 0){
-      //timer ++;   
-    //}else{
-      //timer = 0; 
-    //}  
-    
-    //if encoder speed is ZERO for 250 milliseconds.
-    //pulseCount to ZERO. 
-    //if(timer >= 125){
-      //enc->pulseCount = 0;  
-    //}  
-           
-    //Wait 100 microseconds aka 0.1 milliseconds.
-    //waitcnt(CNT + 1 * us); 
   }   
 } 
+
+int Encoder::get_distance(){
+  return distance;
+}  

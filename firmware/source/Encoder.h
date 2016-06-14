@@ -14,14 +14,21 @@ const static double ticks_per_meter = 8533; // In encoder counts
 class Encoder{
 private:
   int pin1, pin2;
+  
   unsigned int pulseCount;
+  
   int speed;
   int direction;
+  int distance;
+  
   // This is the minimum stack size required to for the cog (thread) to run.
   // Don't set it below 250.
   char stack[250];  
+  
   int cogId;
+  
   int side;
+  
   static void run(void* obj);
 public:
   
@@ -41,14 +48,14 @@ public:
   /// It resets when it turn the other way around. 
   /// It also resets when the encoder Speed is Zero for 250 milliseconds. 
   /// @return The pulse count.
-  unsigned int getEncoderCount();
+  unsigned int get_encoderCount();
   
   /// @brief Get the direction 
   ///
   /// Get the direction which the encoder it turning.
   /// 0 is backwards, 1 is forwards. 
   /// @return the direction.
-  int getDirection();
+  int get_direction();
   
   
   /// @brief Get pulse speed.
@@ -57,7 +64,9 @@ public:
   /// Since we use a rotary encoder disk this effectively translates in the rotation speed.
   /// The speed is calculated from a second ago and may lag behind the reality a little.
   /// @return The pulse count last second.
-  int getSpeed();    
+  int get_speed(); 
+  
+  int get_distance();   
 };
   
 #endif // _ENCODER_H
