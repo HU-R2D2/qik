@@ -1,13 +1,12 @@
 Main.cpp
 Qik.cpp
-Qik.h
-Commands.h
-Uart.h
 Uart.cpp
-Channel.h
-Encoder.cpp -> Encoder.cpp
-Encoder.h -> Encoder.h
-Main.h
+Encoder.cpp
+Channel.h -> ../include/Channel.h
+Commands.h -> ../include/Commands.h
+Encoder.h -> ../include/Encoder.h
+Qik.h -> ../include/Qik.h
+Uart.h -> ../include/Uart.h
 >compiler=C++
 >memtype=lmm main ram
 >optimize=-Os

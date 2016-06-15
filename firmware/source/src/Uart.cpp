@@ -8,9 +8,9 @@
 *
 * @file Uart.cpp
 * @date Created: 13-5-2015
-* @version 1.1
+* @version 1.2
 *
-* @author Nathan Schaaphuizen
+* @author Nathan Schaaphuizen, Martijn van Dijk
 *
 * @section LICENSE
 * License: newBSD
