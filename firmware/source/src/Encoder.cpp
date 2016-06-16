@@ -73,7 +73,6 @@ void Encoder::run(void* obj){
   //Since we are sure the object is of type Encoder we can safely cast it back to a Encoder pointer. 
   Encoder* enc = reinterpret_cast<Encoder*>(obj);
   enc->direction = -1;
-  int old_direction = -1;
   
   //algoritme to set the pins to that for both wheels forwards and backwards is the same way. 
   if(enc->side == 0){
@@ -137,12 +136,6 @@ void Encoder::run(void* obj){
       }               
     }
     
-    //if the direction changes pulseCount resets. 
-    else if(enc->direction != old_direction){
-      enc->pulse_count = 0;
-      old_direction = enc->direction;
-    }
-    
     //Update the last pin state with the new.      
     read_last1 = read_pin1;
     read_last2 = read_pin2;
@@ -150,22 +143,24 @@ void Encoder::run(void* obj){
     count += elapsed_cnt;
     
     if(count >= 16000000){
-       //Restet the counter to 0.
-       //So we can begin counting a new period.
        count = 0;
        
-       //Update the speed.
-       //The speed is calculated to millimeter each second.
        int pulses = enc->pulse_count - last_pulse_count;
+       
        int mm_driven = (pulses * 1000) / 8553;
        
-       enc->distance += mm_driven;
+       // Calculate the absolute distance, the distance counter always counts upwards
+       // like a car, if you drive backwards the counter doesn't go down
+       int abs_distance = mm_driven < 0 ? mm_driven * -1 : mm_driven;
        
+       enc->distance += abs_distance;
+       
+       // Multiply the distance by the direction and 5 (because this is the distance 
+       // traveled in 1/5 second) and we want to know the distance per second
        int mm_per_second = enc->direction * mm_driven * 5;
        
        enc->speed = mm_per_second;
        
-       //Update the pulse count from a period ago with the current pulse count.
        last_pulse_count = enc->pulse_count;
     }
   }   

@@ -47,17 +47,13 @@
 
 const static int COUNTS = 2000;
 
-const static double ticks_per_meter = 8533; // In encoder counts
+const static double TICKS_PER_METER = 8533; // In encoder counts
 
 class Encoder{
 private:
   int pin1, pin2;
   
   unsigned int pulse_count;
-  
-  int speed;
-  int direction;
-  int distance;
   
   // This is the minimum stack size required to for the cog (thread) to run.
   // Don't set it below 250.
@@ -69,6 +65,9 @@ private:
   
   static void run(void* obj);
 public:
+  int speed;
+  int direction;
+  int distance;
   
   /// @brief Create a new Encoder object.
   ///

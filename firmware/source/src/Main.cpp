@@ -51,7 +51,7 @@ const int version = 1;
 Encoder * enc0;
 Encoder * enc1;
 
-volatile int motor_speed = 320;
+volatile int motor_speed = 240;
 volatile int motor_direction0 = 0;
 volatile int motor_direction1 = 0;
 
@@ -195,7 +195,7 @@ int main(){
         set_motor_direction1(-1);
       }break; 
       case uart_set_speed:{
-        char speed = uart.readInt();
+        int speed = uart.readInt();
         set_motor_speed(speed);
       }break; 
       case uart_get_speed0:{
@@ -205,9 +205,11 @@ int main(){
         uart.send(get_motor_speed1());
       break;}
       case uart_get_distance0:{
+        //printf("\nDistance 0: %d\n", get_distance0());
         uart.send(get_distance0());
       break;}
       case uart_get_distance1:{
+        //printf("\nDistance 1: %d\n", get_distance1());
         uart.send(get_distance1());
       break;}
       case uart_rotate_left:{

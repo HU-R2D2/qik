@@ -68,14 +68,16 @@ char Uart::readChar(){
   
 int Uart::readInt(){
   //The four character we're going to read and convert into a int.
-  char intChar[4];
-  //Read the four characters.
+  char int_char[4];
+  
   for(int i =0; i<4; ++i){
-     intChar[i] = readChannel.read();  
-  }    
+     int_char[i] = readChannel.read();  
+  } 
+   
   //Cast the four read chars to a int.
   //This is faster and easier than bit shifting.
-  int data = *(reinterpret_cast<int*>(intChar));
+  int data = *(reinterpret_cast<int*>(int_char));
+  
   //Return the int.
   return data;   
 }
